@@ -7,11 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { HttpModule } from '@angular/http';
+import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
+import { CoinsListPage } from '../pages/coins-list/coins-list';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CoinsDataProvider } from '../providers/coins-data/coins-data';
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -20,22 +24,27 @@ var AppModule = /** @class */ (function () {
             declarations: [
                 MyApp,
                 HomePage,
-                ListPage
+                ListPage,
+                CoinsListPage
             ],
             imports: [
                 BrowserModule,
+                HttpModule,
                 IonicModule.forRoot(MyApp),
+                IonicStorageModule.forRoot()
             ],
             bootstrap: [IonicApp],
             entryComponents: [
                 MyApp,
                 HomePage,
-                ListPage
+                ListPage,
+                CoinsListPage
             ],
             providers: [
                 StatusBar,
                 SplashScreen,
-                { provide: ErrorHandler, useClass: IonicErrorHandler }
+                { provide: ErrorHandler, useClass: IonicErrorHandler },
+                CoinsDataProvider
             ]
         })
     ], AppModule);

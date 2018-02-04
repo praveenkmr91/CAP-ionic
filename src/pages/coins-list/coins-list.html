@@ -10,7 +10,7 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <!-- <ion-title>COINS</ion-title> -->
-    <ion-segment [(ngModel)]="defaultCoinListView">
+    <ion-segment [(ngModel)]="defaultCoinListView" (ionChange)="coinListViewChanged($event.value)">
       <ion-segment-button value="all">
         All
       </ion-segment-button>
@@ -39,8 +39,26 @@
   </ion-refresher>
   <div [ngSwitch]="defaultCoinListView">
     <!-- all coins view -->
-    <div *ngSwitchCase="'all'" style="height:100%">
+	
+	<ion-list>
+    <ion-item-divider color="light">
+    			<ion-avatar item-start></ion-avatar>
+
+      		<button ion-button icon-end color="dark" clear small (click)="sortBy('rank', rankSortOrder)">
+      			Rank
+				<ion-icon *ngIf="rankEnabled" [name]="rankSortOrder === 'asc' ? 'arrow-round-up' : 'arrow-round-down'"></ion-icon>
+      		</button>
+
+      		<button ion-button item-end icon-end color="dark" clear small (click)="sortBy('changePercent', percentSortOrder)">
+      			24hr Chg%
+				<ion-icon *ngIf="!rankEnabled" [name]="percentSortOrder === 'asc' ? 'arrow-round-up' : 'arrow-round-down'"></ion-icon>
+      		</button>
+
+    		</ion-item-divider>
+    		</ion-list>
+    <div *ngSwitchCase="'all'">
       <ion-list>
+    		
         <ion-item-sliding #slidingItem *ngFor="let coin of coins" (click)="onCoinListItemTap($event, coin)">
           <ion-item>
             <ion-avatar item-start>
@@ -48,20 +66,23 @@
             </ion-avatar>
             <h2>{{coin.long}} ({{coin.short}})</h2>
             <span float-start>{{coin.price | currency}}</span>
+            
             <span float-end>{{coin.perc}} (%24hr)</span>
           </ion-item>
           <ion-item-options side="right" color="secondary">
-            <button ion-button (click)="doAddToFavorites(slidingItem, coin)" *ngIf="defaultCoinListView === 'all'">
-              <ion-icon name="heart-outline" color="danger"></ion-icon>
-              Fav
+            <button ion-button (click)="toggleFavorite(coin)" *ngIf="defaultCoinListView === 'all'" color="light">
+              <ion-icon [name]="isCoinInFavs(coin.short) ? 'heart' : 'heart-outline'" color="danger"></ion-icon>
             </button>
           </ion-item-options>
         </ion-item-sliding>
       </ion-list>
     </div>
     <!-- fav coins view -->
-    <div *ngSwitchCase="'fav'" style="height:100%">
+    <div *ngSwitchCase="'fav'">
+    	
+
       <ion-list>
+      	
         <ion-item-sliding #slidingFavItem *ngFor="let coin of favCoins" (click)="onCoinListItemTap($event, coin)">
           <ion-item>
             <ion-avatar item-start>
@@ -72,7 +93,7 @@
             <span float-end>{{coin.perc}} (%24hr)</span>
           </ion-item>
           <ion-item-options side="right">
-            <button ion-button (click)="doRemoveFromFavorites(slidingFavItem, coin)" *ngIf="defaultCoinListView === 'fav'">
+            <button ion-button (click)="doRemoveFromFavorites(coin)" *ngIf="defaultCoinListView === 'fav'">
               <ion-icon name="heart" color="danger"></ion-icon>
             </button>
           </ion-item-options>

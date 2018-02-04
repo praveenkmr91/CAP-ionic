@@ -13,17 +13,19 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
+import { CoinsListPage } from '../pages/coins-list/coins-list';
 var MyApp = /** @class */ (function () {
     function MyApp(platform, statusBar, splashScreen) {
         this.platform = platform;
         this.statusBar = statusBar;
         this.splashScreen = splashScreen;
-        this.rootPage = HomePage;
+        this.rootPage = CoinsListPage;
         this.initializeApp();
         // used for an example of ngFor and navigation
         this.pages = [
             { title: 'Home', component: HomePage },
-            { title: 'List', component: ListPage }
+            { title: 'List', component: ListPage },
+            { title: 'Coins', component: CoinsListPage }
         ];
     }
     MyApp.prototype.initializeApp = function () {
