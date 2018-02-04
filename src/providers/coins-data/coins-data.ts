@@ -19,8 +19,8 @@ export class CoinsDataProvider {
 	getCoins() {
 		//var limit = 20;
 
-		var url = "https://coincap.io/front";
-		//var dev_url = 'assets/data/coins-by-cap.json';
-		return this.http.get(url).map(res => res.json());
+		//var url = "https://coincap.io/front";
+		var dev_url = "assets/data/coins-by-cap.json";
+		return this.http.get(dev_url).map(res => res.json());
 	}
 }
