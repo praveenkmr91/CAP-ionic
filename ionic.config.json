@@ -1,6 +1,6 @@
 {
   "name": "CAP",
-  "app_id": "",
+  "app_id": "13599dec",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
