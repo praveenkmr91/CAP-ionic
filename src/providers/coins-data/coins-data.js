@@ -7,9 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { Injectable } from "@angular/core";
+import { Http } from "@angular/http";
+import "rxjs/add/operator/map";
 /*
   Generated class for the CoinsDataProvider provider.
 
@@ -19,12 +19,12 @@ import 'rxjs/add/operator/map';
 var CoinsDataProvider = /** @class */ (function () {
     function CoinsDataProvider(http) {
         this.http = http;
-        console.log('Hello CoinsDataProvider Provider');
+        console.log("Hello CoinsDataProvider Provider");
     }
     CoinsDataProvider.prototype.getCoins = function () {
-        var limit = 20;
-        var url = "https://coincap.io/front";
-        var dev_url = 'assets/data/coins-by-cap.json';
+        //var limit = 20;
+        //var url = "https://coincap.io/front";
+        var dev_url = "assets/data/coins-by-cap.json";
         return this.http.get(dev_url).map(function (res) { return res.json(); });
     };
     CoinsDataProvider = __decorate([

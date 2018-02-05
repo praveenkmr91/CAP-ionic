@@ -1,24 +1,28 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { HttpModule } from '@angular/http';
-import { IonicStorageModule } from '@ionic/storage';
+import { BrowserModule } from "@angular/platform-browser";
+import { ErrorHandler, NgModule } from "@angular/core";
+import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
+import { HttpModule } from "@angular/http";
+import { IonicStorageModule } from "@ionic/storage";
+import { StatusBar } from "@ionic-native/status-bar";
+import { SplashScreen } from "@ionic-native/splash-screen";
 
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
-import { CoinsListPage } from '../pages/coins-list/coins-list';
+// pages
+import { MyApp } from "./app.component";
+import { CoinsListPage } from "../pages/coins/coins-list/coins-list";
+import { AlertsListPage } from "../pages/alerts/alerts-list/alerts-list";
+import { AlertAddPage } from "../pages/alerts/alert-add/alert-add";
+import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { CoinsDataProvider } from '../providers/coins-data/coins-data';
+// services
+import { CoinsDataProvider } from "../providers/coins-data/coins-data";
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    ListPage,
-    CoinsListPage
+    PortfolioListPage,
+    CoinsListPage,
+    AlertsListPage,
+    AlertAddPage
   ],
   imports: [
     BrowserModule,
@@ -29,14 +33,15 @@ import { CoinsDataProvider } from '../providers/coins-data/coins-data';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    ListPage,
-    CoinsListPage
+    PortfolioListPage,
+    CoinsListPage,
+    AlertsListPage,
+    AlertAddPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     CoinsDataProvider
   ]
 })

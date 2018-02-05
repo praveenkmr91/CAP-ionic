@@ -4,29 +4,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { HttpModule } from '@angular/http';
-import { IonicStorageModule } from '@ionic/storage';
-import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
-import { CoinsListPage } from '../pages/coins-list/coins-list';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { CoinsDataProvider } from '../providers/coins-data/coins-data';
+import { BrowserModule } from "@angular/platform-browser";
+import { ErrorHandler, NgModule } from "@angular/core";
+import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
+import { HttpModule } from "@angular/http";
+import { IonicStorageModule } from "@ionic/storage";
+import { StatusBar } from "@ionic-native/status-bar";
+import { SplashScreen } from "@ionic-native/splash-screen";
+// pages
+import { MyApp } from "./app.component";
+import { CoinsListPage } from "../pages/coins/coins-list/coins-list";
+import { AlertsListPage } from "../pages/alerts/alerts-list/alerts-list";
+import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
+// services
+import { CoinsDataProvider } from "../providers/coins-data/coins-data";
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         NgModule({
-            declarations: [
-                MyApp,
-                HomePage,
-                ListPage,
-                CoinsListPage
-            ],
+            declarations: [MyApp, PortfolioListPage, CoinsListPage, AlertsListPage],
             imports: [
                 BrowserModule,
                 HttpModule,
@@ -34,12 +31,7 @@ var AppModule = /** @class */ (function () {
                 IonicStorageModule.forRoot()
             ],
             bootstrap: [IonicApp],
-            entryComponents: [
-                MyApp,
-                HomePage,
-                ListPage,
-                CoinsListPage
-            ],
+            entryComponents: [MyApp, PortfolioListPage, CoinsListPage, AlertsListPage],
             providers: [
                 StatusBar,
                 SplashScreen,
