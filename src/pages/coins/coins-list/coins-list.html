@@ -1,0 +1,97 @@
+<!--
+  Generated template for the CoinsListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar no-border-bottom color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <!-- <ion-title>COINS</ion-title> -->
+    <ion-segment [(ngModel)]="defaultCoinListView" (ionChange)="coinListViewChanged($event.value)" color="light">
+      <ion-segment-button value="all">
+        All
+      </ion-segment-button>
+      <ion-segment-button value="fav">
+        Favorites
+      </ion-segment-button>
+    </ion-segment>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="doToggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+      <button ion-button icon-only (click)="doOpensettings()">
+        <ion-icon name="options"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-toolbar color="primary" *ngIf="showSearchBar">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionCancel)="onSearchCancel($event)" (ionInput)="doFilterCoins($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding #content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div [ngSwitch]="defaultCoinListView">
+    <!-- all coins view -->
+    <ion-list>
+      <ion-item-divider color="light">
+        <ion-avatar item-start></ion-avatar>
+        <button ion-button icon-end color="dark" clear small (click)="sortBy('rank', rankSortOrder)">
+          Rank
+          <ion-icon *ngIf="rankEnabled" [name]="rankSortOrder === 'asc' ? 'arrow-round-up' : 'arrow-round-down'"></ion-icon>
+        </button>
+        <button ion-button item-end icon-end color="dark" clear small (click)="sortBy('changePercent', percentSortOrder)">
+          24hr Chg%
+          <ion-icon *ngIf="!rankEnabled" [name]="percentSortOrder === 'asc' ? 'arrow-round-up' : 'arrow-round-down'"></ion-icon>
+        </button>
+      </ion-item-divider>
+    </ion-list>
+    <div *ngSwitchCase="'all'">
+      <ion-list>
+        <ion-item-sliding #slidingItem *ngFor="let coin of coins" (click)="onCoinListItemTap($event, coin)">
+          <ion-item>
+            <ion-avatar item-start>
+              <ion-icon class="cc {{coin.short}}"></ion-icon>
+            </ion-avatar>
+            <h2>{{coin.long}} ({{coin.short}})</h2>
+            <span float-start>{{coin.price | currency}}</span>
+            <span float-end>{{coin.perc}} (%24hr)</span>
+          </ion-item>
+          <ion-item-options side="right" color="secondary">
+            <button ion-button (click)="toggleFavorite(coin)" *ngIf="defaultCoinListView === 'all'" color="light">
+              <ion-icon [name]="isCoinInFavs(coin.short) ? 'heart' : 'heart-outline'" color="danger"></ion-icon>
+              <span>Fav</span>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+    <!-- fav coins view -->
+    <div *ngSwitchCase="'fav'">
+      <ion-list>
+        <ion-item-sliding #slidingFavItem *ngFor="let coin of favCoins" (click)="onCoinListItemTap($event, coin)">
+          <ion-item>
+            <ion-avatar item-start>
+              <ion-icon class="cc {{coin.short}}"></ion-icon>
+            </ion-avatar>
+            <h2>{{coin.long}} ({{coin.short}})</h2>
+            <span float-start>{{coin.price | currency}}</span>
+            <span float-end>{{coin.perc}} (%24hr)</span>
+          </ion-item>
+          <ion-item-options side="right">
+            <button ion-button (click)="doRemoveFromFavorites(coin)" *ngIf="defaultCoinListView === 'fav'">
+              <ion-icon name="heart" color="danger"></ion-icon>
+              <span>Fav</span>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>

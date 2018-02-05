@@ -1,0 +1,48 @@
+<!--
+  Generated template for the AlertAddPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Add Alert</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+
+  <ion-item>
+    <ion-label color="primary" floating>Coin Symbol (BTC,ETH..)</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label color="primary" floating>Target Value</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Base Unit</ion-label>
+    <ion-select [(ngModel)]="unit">
+      <ion-option *ngFor="let baseUnit of baseUnits" [value]="baseUnit">{{baseUnit}}</ion-option>
+    </ion-select>
+  </ion-item>
+
+ 
+
+  <ion-item no-lines>
+    <ion-label>
+    	Trigger Condition
+    </ion-label>
+    <ion-toggle [(ngModel)]="triggerCond" color="danger" (click)="triggerCondChanged()"></ion-toggle>
+    
+  </ion-item>
+  
+	
+	<br>
+	<br>
+    <button icon-start ion-button block color="secondary" (click)="doAdd()">
+      Add
+    </button>
+
+</ion-content>

@@ -1,0 +1,14 @@
+[
+	{
+		"symbol": "TRX",
+		"unit": "BTC",
+		"value": "0.00125",
+		"trigger_condition": "less"
+	},
+	{
+		"symbol": "MCO",
+		"unit": "ETH",
+		"value": "0.00125",
+		"trigger_condition": "more"
+	}
+]

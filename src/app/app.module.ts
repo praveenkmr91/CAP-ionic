@@ -15,6 +15,7 @@ import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-l
 
 // services
 import { CoinsDataProvider } from "../providers/coins-data/coins-data";
+import { AlertsDataProvider } from '../providers/alerts-data/alerts-data';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { CoinsDataProvider } from "../providers/coins-data/coins-data";
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-    CoinsDataProvider
+    CoinsDataProvider,
+    AlertsDataProvider
   ]
 })
 export class AppModule {}
