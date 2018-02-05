@@ -124,8 +124,6 @@ export class AlertsListPage {
 				refresher.complete();
 			},
 			error => {
-				console.log("something went wrong");
-
 				// create common util
 				let alert = this.alertCtrl.create({
 					title: "Error",
