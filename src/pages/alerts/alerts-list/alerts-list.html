@@ -25,22 +25,34 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding #content>
-  <ion-refresher (ionRefresh)="doRefreshAlerts($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
-    </ion-refresher-content>
-  </ion-refresher>
-  <ion-list>
+  <!--  <ion-refresher (ionRefresh)="doRefreshAlerts($event)">
+   <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
+   </ion-refresher-content>
+ </ion-refresher> -->
+  <ion-list [reorder]="allowReorder">
     <ion-item *ngFor="let alert of alertsList">
+      <ion-icon class="cc btc"></ion-icon>
+      {{alert.symbol}}
+      <div>
+        <ng-template #less> &lt; </ng-template>
+        <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
+      </div>
       <ion-grid>
         <ion-row>
           <ion-col>
-            {{alert.symbol}}
+            <button ion-button color="secondary" clear>
+              <fa-icon name="pencil"></fa-icon>
+            </button>
           </ion-col>
           <ion-col>
-            <ng-template #less> &lt; </ng-template>
-            <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
+            <button ion-button color="primary" clear>
+              <fa-icon name="bell"></fa-icon>
+            </button>
           </ion-col>
           <ion-col>
+            <button ion-button color="danger" clear>
+              <ion-icon name="trash"></ion-icon>
+            </button>
           </ion-col>
         </ion-row>
       </ion-grid>

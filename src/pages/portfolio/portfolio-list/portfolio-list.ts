@@ -23,7 +23,7 @@ import * as _ from "lodash";
 })
 export class PortfolioListPage {
 	showSearchBar: boolean = false;
-	searchQuery: string;
+	searchQuery: string = "";
 
 	@ViewChild("content") content: Content;
 

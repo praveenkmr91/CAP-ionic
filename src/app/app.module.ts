@@ -5,6 +5,7 @@ import { HttpModule } from "@angular/http";
 import { IonicStorageModule } from "@ionic/storage";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
+import { FaIconComponent } from "../components/fa-icon/fa-icon.component";
 
 // pages
 import { MyApp } from "./app.component";
@@ -15,11 +16,12 @@ import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-l
 
 // services
 import { CoinsDataProvider } from "../providers/coins-data/coins-data";
-import { AlertsDataProvider } from '../providers/alerts-data/alerts-data';
+import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
 
 @NgModule({
   declarations: [
     MyApp,
+    FaIconComponent,
     PortfolioListPage,
     CoinsListPage,
     AlertsListPage,

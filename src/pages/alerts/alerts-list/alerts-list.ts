@@ -30,6 +30,7 @@ export class AlertsListPage {
 	alertsList: any = [];
 	alertsListClone: any = [];
 	searchQuery: string = "";
+	allowReorder: boolean = true;
 
 	@ViewChild("content") content: Content;
 	//@ViewChild("triggerCond") content: Content;
