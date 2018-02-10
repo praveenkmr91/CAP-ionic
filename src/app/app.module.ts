@@ -6,11 +6,13 @@ import { IonicStorageModule } from "@ionic/storage";
 import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { FaIconComponent } from "../components/fa-icon/fa-icon.component";
+import { LongPressModule } from "ionic-long-press";
 
 // pages
 import { MyApp } from "./app.component";
 import { CoinsListPage } from "../pages/coins/coins-list/coins-list";
 import { AlertsListPage } from "../pages/alerts/alerts-list/alerts-list";
+import { AlertOptionsPage } from "../pages/alerts/alerts-list/alert-options/alert-options";
 import { AlertAddPage } from "../pages/alerts/alert-add/alert-add";
 import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
 
@@ -25,13 +27,15 @@ import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
     PortfolioListPage,
     CoinsListPage,
     AlertsListPage,
+    AlertOptionsPage,
     AlertAddPage
   ],
   imports: [
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    LongPressModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -39,6 +43,7 @@ import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
     PortfolioListPage,
     CoinsListPage,
     AlertsListPage,
+    AlertOptionsPage,
     AlertAddPage
   ],
   providers: [

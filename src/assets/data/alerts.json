@@ -12,25 +12,25 @@
 		"trigger_condition": "more"
 	},
 	{
-		"symbol": "TRX",
+		"symbol": "WINGS",
 		"unit": "BTC",
 		"value": "0.00125",
 		"trigger_condition": "less"
 	},
 	{
-		"symbol": "MCO",
+		"symbol": "DASH",
 		"unit": "ETH",
 		"value": "0.00125",
 		"trigger_condition": "more"
 	},
 	{
-		"symbol": "TRX",
+		"symbol": "LTC",
 		"unit": "BTC",
 		"value": "0.00125",
 		"trigger_condition": "less"
 	},
 	{
-		"symbol": "MCO",
+		"symbol": "BCH",
 		"unit": "ETH",
 		"value": "0.00125",
 		"trigger_condition": "more"

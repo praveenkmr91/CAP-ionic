@@ -5,12 +5,14 @@ import {
 	NavParams,
 	Content,
 	LoadingController,
-	AlertController
+	AlertController,
+	PopoverController
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
-import * as _ from "lodash";
+
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
+import { AlertOptionsPage } from "./alert-options/alert-options";
 
 /**
  * Generated class for the AlertsListPage page.
@@ -30,7 +32,8 @@ export class AlertsListPage {
 	alertsList: any = [];
 	alertsListClone: any = [];
 	searchQuery: string = "";
-	allowReorder: boolean = true;
+	allowReorder: boolean = false;
+	selectedAlertOption: string = "";
 
 	@ViewChild("content") content: Content;
 	//@ViewChild("triggerCond") content: Content;
@@ -41,7 +44,8 @@ export class AlertsListPage {
 		public loading: LoadingController,
 		public AlertsDataProvider: AlertsDataProvider,
 		public storage: Storage,
-		public alertCtrl: AlertController
+		public alertCtrl: AlertController,
+		public popoverCtrl: PopoverController
 	) {}
 
 	ionViewDidLoad() {
@@ -135,5 +139,44 @@ export class AlertsListPage {
 				alert.present();
 			}
 		);
+	}
+
+	itemLongPress(): void {
+		this.allowReorder = true;
+	}
+
+	finishReOrdering(): void {
+		this.allowReorder = false;
+	}
+
+	presentPopover(myEvent, symbol) {
+		let popover = this.popoverCtrl.create(AlertOptionsPage);
+		popover.present({
+			ev: myEvent
+		});
+		popover.onDidDismiss(data => {
+			if (data != null) {
+				this.selectedAlertOption = data;
+				switch (data) {
+					case "edit":
+						this.editAlert(symbol);
+						break;
+					case "delete":
+						this.deleteAlert(symbol);
+						break;
+					case "toggle":
+						this.toggleAlert(symbol);
+						break;
+				}
+			}
+		});
+	}
+
+	deleteAlert(symbol) {
+		var newList = this.AlertsDataProvider.deleteAlert(
+			symbol,
+			this.alertsList
+		);
+		console.log(newList);
 	}
 }

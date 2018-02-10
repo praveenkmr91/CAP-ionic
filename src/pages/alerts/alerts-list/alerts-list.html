@@ -10,12 +10,17 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Alerts</ion-title>
-    <ion-buttons end>
+    <ion-buttons end *ngIf="!allowReorder">
       <button ion-button icon-only (click)="doToggleSearchBar()">
         <ion-icon name="search"></ion-icon>
       </button>
       <button ion-button icon-only (click)="doOpensettings()">
         <ion-icon name="options"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end *ngIf="allowReorder">
+      <button ion-button icon-only (click)="finishReOrdering()">
+        <ion-icon name="checkmark"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -30,14 +35,25 @@
    </ion-refresher-content>
  </ion-refresher> -->
   <ion-list [reorder]="allowReorder">
-    <ion-item *ngFor="let alert of alertsList">
-      <ion-icon class="cc btc"></ion-icon>
-      {{alert.symbol}}
-      <div>
+    <ion-item *ngFor="let alert of alertsList" ion-long-press [interval]="700" (onPressing)="itemLongPress()">
+      <button ion-button icon-only clear color="danger" (click)="deleteAlert(alert.symbol)">
+        <ion-icon name="ion-minus-circled"></ion-icon>
+      </button>
+      <h1>
+      	<i class="cc BTC"></i>
+         <span>{{alert.symbol}}</span>
+	<button float-end ion-button icon-only clear (click)="presentPopover($event, alert.symbol)">
+      <ion-icon name="more"></ion-icon>
+    </button>
+      </h1>
+      <br>
+      <div float-start>
+        Target:
         <ng-template #less> &lt; </ng-template>
         <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
       </div>
-      <ion-grid>
+      <div float-end>CP: 11000USD </div>
+      <!-- <ion-grid>
         <ion-row>
           <ion-col>
             <button ion-button color="secondary" clear>
@@ -55,7 +71,7 @@
             </button>
           </ion-col>
         </ion-row>
-      </ion-grid>
+      </ion-grid> -->
     </ion-item>
   </ion-list>
   <ion-fab right bottom>
