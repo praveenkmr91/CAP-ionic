@@ -15,6 +15,7 @@ import { Storage } from "@ionic/storage";
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
 import { AlertOptionsPage } from "./alert-options/alert-options";
+import * as _ from "lodash";
 
 /**
  * Generated class for the AlertsListPage page.
@@ -48,9 +49,8 @@ export class AlertsListPage {
 		public storage: Storage,
 		public alertCtrl: AlertController,
 		public popoverCtrl: PopoverController,
-		public toastCtrl: ToastController
-	) //private localNotifications: LocalNotifications
-	{}
+		public toastCtrl: ToastController //private localNotifications: LocalNotifications
+	) {}
 
 	ionViewDidLoad() {
 		//console.log("ionViewDidLoad AlertsListPage");
@@ -200,12 +200,12 @@ export class AlertsListPage {
 	}
 	toggleAlert(symbol) {
 		// Schedule a single notification
-		this.localNotifications.schedule({
+		/*this.localNotifications.schedule({
 			id: 1,
 			text: "Single ILocalNotification",
 			sound: isAndroid ? "file://sound.mp3" : "file://beep.caf",
 			data: { secret: key }
-		});
+		});*/
 	}
 
 	reorderItems(indexes) {
