@@ -6,10 +6,12 @@ import {
 	Content,
 	LoadingController,
 	AlertController,
-	PopoverController
+	PopoverController,
+	ToastController,
+	reorderArray
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
-
+//import { LocalNotifications } from "@ionic-native/local-notifications";
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
 import { AlertOptionsPage } from "./alert-options/alert-options";
@@ -45,11 +47,14 @@ export class AlertsListPage {
 		public AlertsDataProvider: AlertsDataProvider,
 		public storage: Storage,
 		public alertCtrl: AlertController,
-		public popoverCtrl: PopoverController
-	) {}
+		public popoverCtrl: PopoverController,
+		public toastCtrl: ToastController
+	) //private localNotifications: LocalNotifications
+	{}
 
 	ionViewDidLoad() {
-		console.log("ionViewDidLoad AlertsListPage");
+		//console.log("ionViewDidLoad AlertsListPage");
+
 		// define loader configs
 		let loader = this.loading.create({
 			content: "Please wait..."
@@ -98,7 +103,7 @@ export class AlertsListPage {
 		this.content.resize();
 	}
 
-	// open settings
+	// open page settings
 	doOpensettings() {
 		console.log("settings");
 	}
@@ -110,8 +115,13 @@ export class AlertsListPage {
 
 	// search bar list filtering
 	doFilter(event): void {
-		var input = this.searchQuery.toLowerCase();
+		let input = this.searchQuery.toLowerCase();
+
 		// logic to filter alerts
+		this.alertsList = _.filter(this.alertsListClone, alert => {
+			let symbol = alert.symbol.toLowerCase();
+			return symbol.indexOf(input) > -1;
+		});
 	}
 
 	doAddAlert() {
@@ -173,10 +183,32 @@ export class AlertsListPage {
 	}
 
 	deleteAlert(symbol) {
-		var newList = this.AlertsDataProvider.deleteAlert(
+		let deletedItems = this.AlertsDataProvider.deleteAlert(
 			symbol,
 			this.alertsList
 		);
-		console.log(newList);
+
+		let toast = this.toastCtrl.create({
+			message: deletedItems[0].symbol + " is deleted successfully",
+			duration: 3000
+		});
+		toast.present();
+	}
+
+	editAlert(symbol) {
+		console.log(symbol);
+	}
+	toggleAlert(symbol) {
+		// Schedule a single notification
+		this.localNotifications.schedule({
+			id: 1,
+			text: "Single ILocalNotification",
+			sound: isAndroid ? "file://sound.mp3" : "file://beep.caf",
+			data: { secret: key }
+		});
+	}
+
+	reorderItems(indexes) {
+		this.alertsList = reorderArray(this.alertsList, indexes);
 	}
 }

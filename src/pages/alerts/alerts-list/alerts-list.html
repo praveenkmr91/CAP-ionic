@@ -30,48 +30,29 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding #content>
-  <!--  <ion-refresher (ionRefresh)="doRefreshAlerts($event)">
-   <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
-   </ion-refresher-content>
- </ion-refresher> -->
-  <ion-list [reorder]="allowReorder">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-list [reorder]="allowReorder" (ionItemReorder)="reorderItems($event)">
     <ion-item *ngFor="let alert of alertsList" ion-long-press [interval]="700" (onPressing)="itemLongPress()">
-      <button ion-button icon-only clear color="danger" (click)="deleteAlert(alert.symbol)">
-        <ion-icon name="ion-minus-circled"></ion-icon>
+      <button ion-button float-start item-left icon-only clear color="danger" (click)="deleteAlert(alert.symbol)" *ngIf="allowReorder">
+        <fa-icon name="minus-circle"></fa-icon>
       </button>
-      <h1>
-      	<i class="cc BTC"></i>
+      <h2>
+      	<!-- <i class="cc BTC"></i> -->
          <span>{{alert.symbol}}</span>
-	<button float-end ion-button icon-only clear (click)="presentPopover($event, alert.symbol)">
+	<button float-end item-right ion-button icon-only clear (click)="presentPopover($event, alert.symbol)" *ngIf="!allowReorder">
       <ion-icon name="more"></ion-icon>
     </button>
-      </h1>
-      <br>
-      <div float-start>
-        Target:
-        <ng-template #less> &lt; </ng-template>
-        <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
+      </h2>
+      <div>
+        <ion-note>Target:
+          <ng-template #less> &lt; </ng-template>
+          <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
+        </ion-note>
       </div>
-      <div float-end>CP: 11000USD </div>
-      <!-- <ion-grid>
-        <ion-row>
-          <ion-col>
-            <button ion-button color="secondary" clear>
-              <fa-icon name="pencil"></fa-icon>
-            </button>
-          </ion-col>
-          <ion-col>
-            <button ion-button color="primary" clear>
-              <fa-icon name="bell"></fa-icon>
-            </button>
-          </ion-col>
-          <ion-col>
-            <button ion-button color="danger" clear>
-              <ion-icon name="trash"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-grid> -->
+      <ion-note>Current: {{11000 | currency}} </ion-note>
     </ion-item>
   </ion-list>
   <ion-fab right bottom>

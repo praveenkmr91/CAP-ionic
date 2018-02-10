@@ -7,6 +7,7 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { FaIconComponent } from "../components/fa-icon/fa-icon.component";
 import { LongPressModule } from "ionic-long-press";
+//import { LocalNotifications } from "@ionic-native/local-notifications";
 
 // pages
 import { MyApp } from "./app.component";
@@ -16,7 +17,7 @@ import { AlertOptionsPage } from "../pages/alerts/alerts-list/alert-options/aler
 import { AlertAddPage } from "../pages/alerts/alert-add/alert-add";
 import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
 
-// services
+// providers
 import { CoinsDataProvider } from "../providers/coins-data/coins-data";
 import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
 
@@ -24,6 +25,7 @@ import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
   declarations: [
     MyApp,
     FaIconComponent,
+    //LocalNotifications,
     PortfolioListPage,
     CoinsListPage,
     AlertsListPage,
