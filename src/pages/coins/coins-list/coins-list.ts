@@ -7,8 +7,8 @@ import {
 	Content
 } from "ionic-angular";
 import * as _ from "lodash";
-import { CoinsDataProvider } from "../../../providers/coins-data/coins-data";
 import { Storage } from "@ionic/storage";
+import { CoinsDataProvider } from "../../../providers/coins-data/coins-data";
 
 /**
  * Generated class for the CoinsListPage page.

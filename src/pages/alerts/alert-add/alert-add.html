@@ -11,19 +11,21 @@
 </ion-header>
 <ion-content padding>
 
-  <ion-item>
+<form [formGroup]="addAlertForm" (ngSubmit)="addAlertSubmit($event)">
+  
+  <ion-item >
     <ion-label color="primary" floating>Coin Symbol (BTC,ETH..)</ion-label>
-    <ion-input></ion-input>
+    <ion-input type="text" formControlName="symbol" clearInput autocapitalize="characters"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label color="primary" floating>Target Value</ion-label>
-    <ion-input></ion-input>
+    <ion-input type="number" clearInput formControlName="targetVal"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label>Base Unit</ion-label>
-    <ion-select [(ngModel)]="unit">
+    <ion-select formControlName="unit" #unitSelect>
       <ion-option *ngFor="let baseUnit of baseUnits" [value]="baseUnit">{{baseUnit}}</ion-option>
     </ion-select>
   </ion-item>
@@ -32,17 +34,30 @@
 
   <ion-item no-lines>
     <ion-label>
-    	Trigger Condition
+      Trigger Condition
     </ion-label>
-    <ion-toggle [(ngModel)]="triggerCond" color="danger" (click)="triggerCondChanged()"></ion-toggle>
-    
+    <!-- <ion-toggle [(ngModel)]="triggerCond" color="danger" (ionChange)="triggerCondChanged()"></ion-toggle> -->
+
+    <ion-segment color="primary" formControlName="triggerCondition">
+      <ion-segment-button value="less">
+        Less
+      </ion-segment-button>
+      <ion-segment-button value="enemies">
+        More
+      </ion-segment-button>
+    </ion-segment>
+
   </ion-item>
   
-	
-	<br>
-	<br>
-    <button icon-start ion-button block color="secondary" (click)="doAdd()">
-      Add
+  
+  <br>
+  <br>
+    <button icon-start ion-button block outline color="secondary" type="submit" [disabled]="!addAlertForm.valid">
+      <ion-icon name="add-circle"></ion-icon>
+      Add Alert
     </button>
+
+</form>
+  
 
 </ion-content>

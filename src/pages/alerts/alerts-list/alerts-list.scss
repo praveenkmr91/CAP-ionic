@@ -1,6 +1,9 @@
 page-alerts-list {
-	.grid,
-	.col {
-		padding: 0;
+	.icon-section {
+		margin-right: 20px;
+		display: inline-block;
+		i.cc {
+			font-size: 4rem;
+		}
 	}
 }

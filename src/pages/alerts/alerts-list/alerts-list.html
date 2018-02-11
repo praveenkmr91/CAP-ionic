@@ -11,15 +11,15 @@
     </button>
     <ion-title>Alerts</ion-title>
     <ion-buttons end *ngIf="!allowReorder">
-      <button ion-button icon-only (click)="doToggleSearchBar()">
+      <button ion-button icon-only (tap)="doToggleSearchBar()">
         <ion-icon name="search"></ion-icon>
       </button>
-      <button ion-button icon-only (click)="doOpensettings()">
+      <button ion-button icon-only (tap)="doOpensettings()">
         <ion-icon name="options"></ion-icon>
       </button>
     </ion-buttons>
     <ion-buttons end *ngIf="allowReorder">
-      <button ion-button icon-only (click)="finishReOrdering()">
+      <button ion-button icon-only (tap)="finishReOrdering()">
         <ion-icon name="checkmark"></ion-icon>
       </button>
     </ion-buttons>
@@ -35,28 +35,37 @@
     </ion-refresher-content>
   </ion-refresher>
   <ion-list [reorder]="allowReorder" (ionItemReorder)="reorderItems($event)">
-    <ion-item *ngFor="let alert of alertsList" ion-long-press [interval]="700" (onPressing)="itemLongPress()">
-      <button ion-button float-start item-left icon-only clear color="danger" (click)="deleteAlert(alert.symbol)" *ngIf="allowReorder">
-        <fa-icon name="minus-circle"></fa-icon>
-      </button>
-      <h2>
-      	<!-- <i class="cc BTC"></i> -->
-         <span>{{alert.symbol}}</span>
-	<button float-end item-right ion-button icon-only clear (click)="presentPopover($event, alert.symbol)" *ngIf="!allowReorder">
-      <ion-icon name="more"></ion-icon>
-    </button>
-      </h2>
-      <div>
-        <ion-note>Target:
-          <ng-template #less> &lt; </ng-template>
-          <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
-        </ion-note>
+    <ion-item *ngFor="let alert of alertsList" ion-long-press [interval]="700" (onPressing)="itemLongPress($event)" (tap)="presentActionSheet(alert.symbol)">
+      <div class="icon-section" float-start>
+        <button ion-button float-start item-left icon-only clear color="danger" (tap)="deleteAlert(alert.symbol)" *ngIf="allowReorder">
+          <fa-icon name="minus-circle"></fa-icon>
+        </button>
+
+        <!-- <span class="sprite sprite-bitcoin small_coin_logo"  *ngIf="!allowReorder"></span> -->
+        <i class="cc {{alert.symbol | uppercase}}"></i>
       </div>
-      <ion-note>Current: {{11000 | currency}} </ion-note>
+      <div class="header-section">
+        <h2>{{alert.symbol}}</h2>
+        <!-- <button float-end item-right ion-button icon-only clear (tap)="presentActionSheet(alert.symbol)" *ngIf="!allowReorder">
+        <ion-icon name="more"></ion-icon>
+      </button> -->
+      </div>
+      
+      <div class="content-section">
+        <p>
+          <ion-note>Target:
+            <ng-template #less> &lt; </ng-template>
+            <span *ngIf="alert.trigger_condition == 'less';else less;"> &gt;</span> {{alert.value}} {{alert.unit}}
+          </ion-note>
+        </p>
+        <p>
+          <ion-note>Current: {{11000 | currency}} </ion-note>
+        </p>
+      </div>
     </ion-item>
   </ion-list>
   <ion-fab right bottom>
-    <button ion-fab color="danger" (click)="doAddAlert()">
+    <button ion-fab color="danger" (tap)="doAddAlert()">
       <ion-icon name="add"></ion-icon>
     </button>
   </ion-fab>

@@ -1,4 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
+import { UpperCasePipe, CurrencyPipe } from "@angular/common";
 import {
 	IonicPage,
 	NavController,
@@ -8,10 +9,14 @@ import {
 	AlertController,
 	PopoverController,
 	ToastController,
-	reorderArray
+	reorderArray,
+	Platform,
+	ActionSheetController
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
-//import { LocalNotifications } from "@ionic-native/local-notifications";
+import { BackgroundMode } from "@ionic-native/background-mode";
+import { LocalNotifications } from "@ionic-native/local-notifications";
+import { Vibration } from "@ionic-native/vibration";
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
 import { AlertOptionsPage } from "./alert-options/alert-options";
@@ -49,11 +54,60 @@ export class AlertsListPage {
 		public storage: Storage,
 		public alertCtrl: AlertController,
 		public popoverCtrl: PopoverController,
-		public toastCtrl: ToastController //private localNotifications: LocalNotifications
-	) {}
+		public toastCtrl: ToastController,
+		public localNotifications: LocalNotifications,
+		public platform: Platform,
+		public vibration: Vibration,
+		public backgroundMode: BackgroundMode,
+		public actionSheetCtrl: ActionSheetController
+	) {
+		if (this.platform.is("cordova")) {
+			this.backgroundMode.enable();
+			this.backgroundMode.overrideBackButton();
+			this.backgroundMode.setDefaults({ silent: false });
+
+			let isactive = this.backgroundMode.isActive();
+			this.showToast(isactive ? "yay" : "nah");
+
+			this.localNotifications.hasPermission().then(function(granted) {
+				if (!granted) {
+					this.localNotifications.registerPermission();
+				}
+			});
+		}
+	}
 
 	ionViewDidLoad() {
 		//console.log("ionViewDidLoad AlertsListPage");
+
+		if (this.platform.is("cordova")) {
+			this.backgroundMode.on("activate").subscribe(
+				data => {
+					this.showToast("success activate");
+				},
+				error => {
+					this.showToast("failure activate");
+				},
+				() => {
+					this.showToast("fainal");
+				}
+			);
+
+			/*this.backgroundMode.on("activate", function() {
+				this.showToast("acive");
+				setInterval(function() {
+					this.showToast("notif trigger");
+					this.triggerNotification({
+						text: " < 0.00078 \n Current: 0.000056"
+					});
+				}, 5000);
+			});*/
+
+			this.localNotifications.on("trigger", (notification, state) => {
+				let notificationData = JSON.parse(notification.data);
+				this.showToast("triggered: " + notificationData.key);
+			});
+		}
 
 		// define loader configs
 		let loader = this.loading.create({
@@ -133,7 +187,7 @@ export class AlertsListPage {
 	}
 
 	// page pull down refresh - update current price
-	doRefreshAlerts(refresher): void {
+	doRefresh(refresher): void {
 		this.AlertsDataProvider.getLatestCoinsPrice().subscribe(
 			data => {
 				refresher.complete();
@@ -151,8 +205,13 @@ export class AlertsListPage {
 		);
 	}
 
-	itemLongPress(): void {
+	itemLongPress() {
+		if (this.allowReorder) {
+			return;
+		}
+		this.vibration.vibrate(50);
 		this.allowReorder = true;
+		return false;
 	}
 
 	finishReOrdering(): void {
@@ -182,33 +241,85 @@ export class AlertsListPage {
 		});
 	}
 
-	deleteAlert(symbol) {
+	deleteAlert(symbol): void {
 		let deletedItems = this.AlertsDataProvider.deleteAlert(
 			symbol,
 			this.alertsList
 		);
 
+		this.showToast(deletedItems[0].symbol + " is deleted successfully");
+	}
+
+	editAlert(symbol): void {
+		console.log(symbol);
+	}
+
+	toggleAlert(symbol): void {
+		this.triggerNotification({
+			text: symbol + " < 0.00078 \n Current: 0.000056",
+			data: { key: symbol },
+			at: new Date(new Date().getTime() + 5 * 1000)
+		});
+	}
+
+	triggerNotification(options?: object): void {
+		let defaults = {
+			title: "TARGET REACHED!!!",
+			sound: "res://platform_default"
+		};
+		options = _.assign(defaults, options);
+		this.localNotifications.schedule(options);
+		this.vibration.vibrate(300);
+	}
+
+	reorderItems(indexes): void {
+		this.alertsList = reorderArray(this.alertsList, indexes);
+	}
+
+	showToast(msg: string, duration?: number) {
+		duration = duration || 3000;
 		let toast = this.toastCtrl.create({
-			message: deletedItems[0].symbol + " is deleted successfully",
-			duration: 3000
+			message: msg,
+			duration: duration
 		});
 		toast.present();
 	}
 
-	editAlert(symbol) {
-		console.log(symbol);
-	}
-	toggleAlert(symbol) {
-		// Schedule a single notification
-		/*this.localNotifications.schedule({
-			id: 1,
-			text: "Single ILocalNotification",
-			sound: isAndroid ? "file://sound.mp3" : "file://beep.caf",
-			data: { secret: key }
-		});*/
-	}
+	presentActionSheet(symbol?: string) {
+		if (!this.allowReorder) {
+			let actionSheet = this.actionSheetCtrl.create({
+				title: "Options",
+				buttons: [
+					{
+						text: "Edit",
+						icon: "color-wand",
+						cssClass: "color-wand",
+						handler: () => {
+							console.log("Edit");
+							// navigate to edit page
+						}
+					},
+					{
+						text: "Toggle Alert",
+						icon: "alarm",
+						handler: () => {
+							console.log("Toggle clicked");
+						}
+					},
+					{
+						text: "Delete",
+						style: "destructive",
+						role: "destructive",
+						icon: "trash",
+						handler: () => {
+							console.log(symbol);
+							this.deleteAlert(symbol);
+						}
+					}
+				]
+			});
 
-	reorderItems(indexes) {
-		this.alertsList = reorderArray(this.alertsList, indexes);
+			actionSheet.present();
+		}
 	}
 }

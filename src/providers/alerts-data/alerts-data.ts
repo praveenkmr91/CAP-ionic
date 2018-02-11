@@ -48,4 +48,6 @@ export class AlertsDataProvider {
 			throw err;
 		}
 	}
+
+	addAlert(alertData) {}
 }

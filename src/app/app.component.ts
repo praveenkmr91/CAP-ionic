@@ -6,6 +6,7 @@ import { SplashScreen } from "@ionic-native/splash-screen";
 import { AlertsListPage } from "../pages/alerts/alerts-list/alerts-list";
 import { CoinsListPage } from "../pages/coins/coins-list/coins-list";
 import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
+import { SettingsPage } from "../pages/settings/settings";
 
 @Component({
   templateUrl: "app.html"
@@ -34,12 +35,17 @@ export class MyApp {
       {
         title: "My Alerts",
         component: AlertsListPage,
-        icon: "alarm"
+        icon: "bell"
       },
       {
         title: "All Coins",
         component: CoinsListPage,
-        icon: "logo-bitcoin"
+        icon: "btc"
+      },
+      {
+        title: "Settings",
+        component: SettingsPage,
+        icon: "cog"
       }
     ];
   }
@@ -48,8 +54,10 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      if (this.platform.is("cordova")) {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+      }
     });
   }
 
