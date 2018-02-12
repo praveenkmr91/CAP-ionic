@@ -24,9 +24,8 @@ import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 	templateUrl: "alert-add.html"
 })
 export class AlertAddPage {
-	//alert: any = {};
 	addAlertForm: FormGroup;
-	baseUnits: any = ["USD", "BTC", "ETH"];
+	baseUnits: any = ["USDT", "BTC", "ETH", "NEO", "BCH"];
 
 	constructor(
 		public navCtrl: NavController,
@@ -39,7 +38,7 @@ export class AlertAddPage {
 		this.addAlertForm = this.formBuilder.group({
 			symbol: ["", Validators.required],
 			targetVal: ["", Validators.required],
-			unit: ["", Validators.required],
+			unit: ["BTC", Validators.required],
 			triggerCondition: ["", Validators.required]
 		});
 	}
@@ -55,6 +54,7 @@ export class AlertAddPage {
 
 		if (this.addAlertForm.valid) {
 			console.log(this.addAlertForm.value);
+			// store data
 		} else {
 			console.log("not valid");
 		}

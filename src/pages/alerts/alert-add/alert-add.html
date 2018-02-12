@@ -10,54 +10,47 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-
-<form [formGroup]="addAlertForm" (ngSubmit)="addAlertSubmit($event)">
-  
-  <ion-item >
-    <ion-label color="primary" floating>Coin Symbol (BTC,ETH..)</ion-label>
-    <ion-input type="text" formControlName="symbol" clearInput autocapitalize="characters"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label color="primary" floating>Target Value</ion-label>
-    <ion-input type="number" clearInput formControlName="targetVal"></ion-input>
-  </ion-item>
-
-  <ion-item>
-    <ion-label>Base Unit</ion-label>
-    <ion-select formControlName="unit" #unitSelect>
-      <ion-option *ngFor="let baseUnit of baseUnits" [value]="baseUnit">{{baseUnit}}</ion-option>
-    </ion-select>
-  </ion-item>
-
- 
-
-  <ion-item no-lines>
-    <ion-label>
-      Trigger Condition
-    </ion-label>
-    <!-- <ion-toggle [(ngModel)]="triggerCond" color="danger" (ionChange)="triggerCondChanged()"></ion-toggle> -->
-
-    <ion-segment color="primary" formControlName="triggerCondition">
-      <ion-segment-button value="less">
-        Less
-      </ion-segment-button>
-      <ion-segment-button value="enemies">
-        More
-      </ion-segment-button>
-    </ion-segment>
-
-  </ion-item>
-  
-  
-  <br>
-  <br>
+  <form [formGroup]="addAlertForm" (ngSubmit)="addAlertSubmit($event)">
+    <ion-list>
+      <ion-item>
+        <ion-label color="primary" stacked>Coin Symbol</ion-label>
+        <ion-input type="text" formControlName="symbol" placeholder="(BTC,ETH..)" clearInput autocapitalize="characters"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label color="primary" stacked>Target Value</ion-label>
+        <ion-input type="number" clearInput formControlName="targetVal" placeholder="(0.01)"></ion-input>
+      </ion-item>
+      <ion-item no-lines>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <span>Trigger Condition</span>
+            </ion-col>
+            <ion-col col-4>
+              <ion-segment mode="ios" color="primary" formControlName="triggerCondition">
+                <ion-segment-button value="less">
+                  <ion-icon name="ios-arrow-back-outline"></ion-icon>
+                </ion-segment-button>
+                <ion-segment-button value="more">
+                  <ion-icon name="ios-arrow-forward-outline"></ion-icon>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-label>Base Unit</ion-label>
+        <ion-select formControlName="unit" #unitSelect>
+          <ion-option *ngFor="let baseUnit of baseUnits" [value]="baseUnit">{{baseUnit}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <br>
+    <br>
     <button icon-start ion-button block outline color="secondary" type="submit" [disabled]="!addAlertForm.valid">
       <ion-icon name="add-circle"></ion-icon>
       Add Alert
     </button>
-
-</form>
-  
-
+  </form>
 </ion-content>

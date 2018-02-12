@@ -308,8 +308,6 @@ export class AlertsListPage {
 					},
 					{
 						text: "Delete",
-						style: "destructive",
-						role: "destructive",
 						icon: "trash",
 						handler: () => {
 							console.log(symbol);
