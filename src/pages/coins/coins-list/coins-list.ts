@@ -138,7 +138,6 @@ export class CoinsListPage {
 		// remove from favorites
 
 		this.getFavCoinSymbolsFromStorage().then(favCoinsArr => {
-			debugger;
 			if (_.includes(favCoinsArr, coin.short)) {
 				this.doRemoveFromFavorites(coin);
 			} else {

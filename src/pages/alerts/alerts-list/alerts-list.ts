@@ -78,7 +78,7 @@ export class AlertsListPage {
 	}
 
 	ionViewDidLoad() {
-		//console.log("ionViewDidLoad AlertsListPage");
+		console.log("ionViewDidLoad AlertsListPage");
 
 		if (this.platform.is("cordova")) {
 			this.backgroundMode.on("activate").subscribe(
@@ -108,7 +108,9 @@ export class AlertsListPage {
 				this.showToast("triggered: " + notificationData.key);
 			});
 		}
+	}
 
+	ionViewDidEnter() {
 		// define loader configs
 		let loader = this.loading.create({
 			content: "Please wait..."
@@ -130,36 +132,30 @@ export class AlertsListPage {
 		errorCb?: Function,
 		finalCb?: Function
 	) {
-		this.AlertsDataProvider.getAlertsData().subscribe(
-			data => {
+		this.AlertsDataProvider.getAlertsData()
+			.then(data => {
 				this.alertsList = data;
 				if (successCb) {
 					successCb();
 				}
-			},
-			error => {
-				console.log("something went wrong");
+			})
+			.catch(exception => {
+				this.showToast("unable to fetch alerts data");
 				if (errorCb) {
 					errorCb();
 				}
-			},
-			() => {
-				if (finalCb) {
-					finalCb();
-				}
-			}
-		);
+			});
+	}
+
+	// open page settings
+	doOpensettings() {
+		console.log("settings");
 	}
 
 	// show/hide search bar
 	doToggleSearchBar(): void {
 		this.showSearchBar = !this.showSearchBar;
 		this.content.resize();
-	}
-
-	// open page settings
-	doOpensettings() {
-		console.log("settings");
 	}
 
 	// cancel search
@@ -218,36 +214,14 @@ export class AlertsListPage {
 		this.allowReorder = false;
 	}
 
-	presentPopover(myEvent, symbol) {
-		let popover = this.popoverCtrl.create(AlertOptionsPage);
-		popover.present({
-			ev: myEvent
-		});
-		popover.onDidDismiss(data => {
-			if (data != null) {
-				this.selectedAlertOption = data;
-				switch (data) {
-					case "edit":
-						this.editAlert(symbol);
-						break;
-					case "delete":
-						this.deleteAlert(symbol);
-						break;
-					case "toggle":
-						this.toggleAlert(symbol);
-						break;
-				}
-			}
-		});
-	}
-
 	deleteAlert(symbol): void {
-		let deletedItems = this.AlertsDataProvider.deleteAlert(
-			symbol,
-			this.alertsList
+		let deletedItems = this.AlertsDataProvider.deleteAlert(symbol).then(
+			smbl => {
+				// refresh list
+				this.ionViewDidEnter();
+				this.showToast(smbl.toUpperCase() + " is deleted successfully");
+			}
 		);
-
-		this.showToast(deletedItems[0].symbol + " is deleted successfully");
 	}
 
 	editAlert(symbol): void {

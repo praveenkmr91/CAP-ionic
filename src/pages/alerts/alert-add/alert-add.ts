@@ -4,7 +4,8 @@ import {
 	IonicPage,
 	NavController,
 	NavParams,
-	LoadingController
+	LoadingController,
+	ToastController
 } from "ionic-angular";
 
 import * as _ from "lodash";
@@ -33,7 +34,8 @@ export class AlertAddPage {
 		public loading: LoadingController,
 		public storage: Storage,
 		public AlertsDataProvider: AlertsDataProvider,
-		public formBuilder: FormBuilder
+		public formBuilder: FormBuilder,
+		public toastCtrl: ToastController
 	) {
 		this.addAlertForm = this.formBuilder.group({
 			symbol: ["", Validators.required],
@@ -48,15 +50,32 @@ export class AlertAddPage {
 	}
 
 	addAlertSubmit(evt) {
-		console.log(evt);
-
-		let alertData = {};
-
 		if (this.addAlertForm.valid) {
-			console.log(this.addAlertForm.value);
+			let alertData = this.addAlertForm.value;
 			// store data
+			this.AlertsDataProvider.addAlert(alertData)
+				.then(alertData => {
+					this.navCtrl.pop();
+					this.showToast("Alert Added Successfully");
+				})
+				.catch(exception => {
+					console.error(exception);
+					this.showToast("oh noes!");
+				});
 		} else {
-			console.log("not valid");
+			console.log("form not valid. Please ente all Mandatory fields");
+			this.showToast(
+				"form is not valid. Please enter all Mandatory fields"
+			);
 		}
+	}
+
+	showToast(msg: string, duration?: number) {
+		duration = duration || 3000;
+		let toast = this.toastCtrl.create({
+			message: msg,
+			duration: duration
+		});
+		toast.present();
 	}
 }

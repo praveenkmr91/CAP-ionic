@@ -17,37 +17,77 @@ export class AlertsDataProvider {
 	}
 
 	getAlertsData() {
-		var dev_url = "assets/data/alerts.json";
-		return this.http.get(dev_url).map(res => res.json());
+		return this.fetchAlertDateFromStorage();
 	}
 
 	getLatestCoinsPrice() {
-		var url = "";
+		//var url = "";
 		var dev_url = "assets/data/alerts.json";
 		return this.http.get(dev_url).map(res => res.json());
 	}
 
-	deleteAlert(symbol, list) {
+	deleteAlert(symbol) {
 		try {
 			if (!symbol) {
 				throw "no symbol provided";
 			}
-			if (!_.isArray(list)) {
-				throw "expected an array";
-			}
-			if (_.isArray(list)) {
-				if (!list.length) {
-					throw "received empty list. Nothing to delete";
-				} else {
-					return _.remove(list, function(item) {
+			// remove from storage
+			return this.fetchAlertDateFromStorage().then(alertList => {
+				return new Promise((resolve, reject) => {
+					// remove from list
+					_.remove(alertList, function(item) {
 						return item.symbol === symbol;
 					});
-				}
+					// save it
+					this.saveAlertDateToStorage(alertList).then(() => {
+						resolve(symbol);
+					});
+				});
+			});
+		} catch (err) {
+			throw err;
+		}
+	}
+	/*
+	* Store alert data
+	*/
+	addAlert(alertData) {
+		try {
+			if (!alertData) {
+				throw "no alert data provided";
 			}
+			return this.fetchAlertDateFromStorage().then(
+				alertDataFromStorage => {
+					// push new alert data to exisitng alerts list
+					alertDataFromStorage.push(alertData);
+					// store
+					return this.saveAlertDateToStorage(alertDataFromStorage);
+				}
+			);
 		} catch (err) {
 			throw err;
 		}
 	}
 
-	addAlert(alertData) {}
+	fetchAlertDateFromStorage(): any {
+		return this.storage.get("alertsList").then(alertsList => {
+			if (!alertsList) {
+				return this.storage.set("alertsList", []);
+			} else {
+				return new Promise((resolve, reject) => {
+					resolve(alertsList);
+				});
+			}
+		});
+	}
+
+	saveAlertDateToStorage(data) {
+		return this.clearAlertsData().then(() => {
+			return this.storage.set("alertsList", data);
+		});
+	}
+
+	clearAlertsData() {
+		return this.storage.remove("alertsList");
+	}
 }
