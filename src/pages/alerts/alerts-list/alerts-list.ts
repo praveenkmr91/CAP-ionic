@@ -135,11 +135,17 @@ export class AlertsListPage {
 		this.AlertsDataProvider.getAlertsData()
 			.then(data => {
 				this.alertsList = data;
-				this.doRefresh().then(() => {
+				if (data && data.length) {
+					this.doRefresh().then(() => {
+						if (successCb) {
+							successCb();
+						}
+					});
+				} else {
 					if (successCb) {
 						successCb();
 					}
-				});
+				}
 			})
 			.catch(exception => {
 				this.showToast("unable to fetch alerts data");
