@@ -62,7 +62,7 @@ export class AlertsListPage {
 		public backgroundMode: BackgroundMode,
 		public actionSheetCtrl: ActionSheetController
 	) {
-		if (this.platform.is("cordova")) {
+		/*if (this.platform.is("cordova")) {
 			this.backgroundMode.enable();
 			this.backgroundMode.overrideBackButton();
 			this.backgroundMode.setDefaults({ silent: false });
@@ -75,13 +75,13 @@ export class AlertsListPage {
 					this.localNotifications.registerPermission();
 				}
 			});
-		}
+		}*/
 	}
 
 	ionViewDidLoad() {
 		console.log("ionViewDidLoad AlertsListPage");
 
-		if (this.platform.is("cordova")) {
+		/*if (this.platform.is("cordova")) {
 			this.backgroundMode.on("activate").subscribe(
 				data => {
 					this.showToast("success activate");
@@ -94,7 +94,7 @@ export class AlertsListPage {
 				}
 			);
 
-			/*this.backgroundMode.on("activate", function() {
+			this.backgroundMode.on("activate", function() {
 				this.showToast("acive");
 				setInterval(function() {
 					this.showToast("notif trigger");
@@ -102,13 +102,13 @@ export class AlertsListPage {
 						text: " < 0.00078 \n Current: 0.000056"
 					});
 				}, 5000);
-			});*/
+			});
 
 			this.localNotifications.on("trigger", (notification, state) => {
 				let notificationData = JSON.parse(notification.data);
 				this.showToast("triggered: " + notificationData.key);
 			});
-		}
+		}*/
 	}
 
 	ionViewDidEnter() {
@@ -202,12 +202,20 @@ export class AlertsListPage {
 							data => {
 								_.forEach(data, (coinPairObj: any) => {
 									let symbol = _.keys(coinPairObj)[0];
-									let alertRec = _.find(this.alertsList, [
-										"symbol",
-										_.toLower(symbol)
-									]);
-									alertRec.currentValue =
-										coinPairObj[symbol][alertRec.unit];
+									// extract the alert record based on symbol
+									let alertRec = _.find(
+										this.alertsList,
+										i => {
+											return (
+												_.toLower(i.symbol) ===
+												_.toLower(symbol)
+											);
+										}
+									);
+									if (alertRec) {
+										alertRec.currentValue =
+											coinPairObj[symbol][alertRec.unit];
+									}
 								});
 								if (refresher) {
 									refresher.complete();
