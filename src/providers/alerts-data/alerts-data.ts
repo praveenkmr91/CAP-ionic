@@ -1,6 +1,8 @@
 import { Http } from "@angular/http";
 import { Injectable } from "@angular/core";
 import "rxjs/add/operator/map";
+import "rxjs/add/observable/forkJoin";
+import { Observable } from "rxjs/Observable";
 import { Storage } from "@ionic/storage";
 import * as _ from "lodash";
 
@@ -13,7 +15,7 @@ import * as _ from "lodash";
 @Injectable()
 export class AlertsDataProvider {
 	constructor(public http: Http, public storage: Storage) {
-		console.log("Hello AlertsDataProvider Provider");
+		console.log("AlertsDataProvider Provider");
 	}
 
 	getAlertsData() {
@@ -21,9 +23,34 @@ export class AlertsDataProvider {
 	}
 
 	getLatestCoinsPrice() {
-		//var url = "";
-		var dev_url = "assets/data/alerts.json";
-		return this.http.get(dev_url).map(res => res.json());
+		var url = "https://min-api.cryptocompare.com/data/pricemulti";
+		//?fsyms=ETH,DASH&tsyms=BTC,USD
+
+		return this.getAlertsData().then(data => {
+			let myAlerts = [];
+			_.forEach(data, item => {
+				myAlerts.push({
+					fsym: _.toUpper(item.symbol),
+					tsym: _.toUpper(item.unit)
+				});
+			});
+
+			let observablesArr = [];
+
+			_.forEach(myAlerts, coinPairObj => {
+				let finalUrl =
+					url +
+					"?fsyms=" +
+					coinPairObj.fsym +
+					"&tsyms=" +
+					coinPairObj.tsym;
+				observablesArr.push(
+					this.http.get(finalUrl).map(res => res.json())
+				);
+			});
+
+			return Observable.forkJoin(observablesArr);
+		});
 	}
 
 	deleteAlert(symbol) {
@@ -35,7 +62,7 @@ export class AlertsDataProvider {
 			return this.fetchAlertDateFromStorage().then(alertList => {
 				return new Promise((resolve, reject) => {
 					// remove from list
-					_.remove(alertList, function(item) {
+					_.remove(alertList, (item: any) => {
 						return item.symbol === symbol;
 					});
 					// save it

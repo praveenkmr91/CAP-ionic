@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { UpperCasePipe, CurrencyPipe } from "@angular/common";
+//import { UpperCasePipe, CurrencyPipe } from "@angular/common";
 import {
 	IonicPage,
 	NavController,
@@ -19,7 +19,7 @@ import { LocalNotifications } from "@ionic-native/local-notifications";
 import { Vibration } from "@ionic-native/vibration";
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
-import { AlertOptionsPage } from "./alert-options/alert-options";
+//import { AlertOptionsPage } from "./alert-options/alert-options";
 import * as _ from "lodash";
 
 /**
@@ -135,9 +135,11 @@ export class AlertsListPage {
 		this.AlertsDataProvider.getAlertsData()
 			.then(data => {
 				this.alertsList = data;
-				if (successCb) {
-					successCb();
-				}
+				this.doRefresh().then(() => {
+					if (successCb) {
+						successCb();
+					}
+				});
 			})
 			.catch(exception => {
 				this.showToast("unable to fetch alerts data");
@@ -183,20 +185,40 @@ export class AlertsListPage {
 	}
 
 	// page pull down refresh - update current price
-	doRefresh(refresher): void {
-		this.AlertsDataProvider.getLatestCoinsPrice().subscribe(
-			data => {
-				refresher.complete();
-			},
-			error => {
-				// create common util
-				let alert = this.alertCtrl.create({
-					title: "Error",
-					subTitle:
-						"something went wrong. Please check your internet connection",
-					buttons: ["OK"]
+	doRefresh(refresher?): any {
+		return this.AlertsDataProvider.getLatestCoinsPrice().then(
+			observalbeData => {
+				return new Promise((resolve, reject) => {
+					observalbeData.subscribe(
+						data => {
+							_.forEach(data, (coinPairObj: any) => {
+								let symbol = _.keys(coinPairObj)[0];
+								let alertRec = _.find(this.alertsList, [
+									"symbol",
+									_.toLower(symbol)
+								]);
+								alertRec.currentValue =
+									coinPairObj[symbol][alertRec.unit];
+							});
+							if (refresher) {
+								refresher.complete();
+							}
+							resolve();
+						},
+
+						error => {
+							// create common util
+							let alert = this.alertCtrl.create({
+								title: "Error",
+								subTitle:
+									"something went wrong. Please check your internet connection",
+								buttons: ["OK"]
+							});
+							alert.present();
+							reject();
+						}
+					);
 				});
-				alert.present();
 			}
 		);
 	}
@@ -215,13 +237,11 @@ export class AlertsListPage {
 	}
 
 	deleteAlert(symbol): void {
-		let deletedItems = this.AlertsDataProvider.deleteAlert(symbol).then(
-			smbl => {
-				// refresh list
-				this.ionViewDidEnter();
-				this.showToast(smbl.toUpperCase() + " is deleted successfully");
-			}
-		);
+		this.AlertsDataProvider.deleteAlert(symbol).then(smbl => {
+			// refresh list
+			this.ionViewDidEnter();
+			this.showToast(smbl.toUpperCase() + " is deleted successfully");
+		});
 	}
 
 	editAlert(symbol): void {

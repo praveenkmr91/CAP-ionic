@@ -5,19 +5,26 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-navbar no-border-bottom color="primary">
+  <ion-navbar no-border-bottom no-padding color="primary" >
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <!-- <ion-title>COINS</ion-title> -->
-    <ion-segment [(ngModel)]="defaultCoinListView" (ionChange)="coinListViewChanged($event.value)" color="light">
-      <ion-segment-button value="all">
-        All
-      </ion-segment-button>
-      <ion-segment-button value="fav">
-        Favorites
-      </ion-segment-button>
-    </ion-segment>
+    <ion-grid no-padding>
+      <ion-row>
+        
+        <ion-col col-8 offset-2>
+          <ion-segment [(ngModel)]="defaultCoinListView" (ionChange)="coinListViewChanged($event.value)" color="light" mode="ios">
+            <ion-segment-button value="all">
+              All
+            </ion-segment-button>
+            <ion-segment-button value="fav">
+              Favorites
+            </ion-segment-button>
+          </ion-segment>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <ion-buttons end>
       <button ion-button icon-only (click)="doToggleSearchBar()">
         <ion-icon name="search"></ion-icon>
