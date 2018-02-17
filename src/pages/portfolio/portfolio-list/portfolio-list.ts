@@ -7,7 +7,7 @@ import {
 	LoadingController
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
-import * as _ from "lodash";
+//import * as _ from "lodash";
 
 /**
  * Generated class for the PortfolioListPage page.
@@ -66,7 +66,7 @@ export class PortfolioListPage {
 
 	// search bar list filtering
 	doFilter(event): void {
-		var input = this.searchQuery.toLowerCase();
+		//var input = this.searchQuery.toLowerCase();
 		// logic to filter alerts
 	}
 }
