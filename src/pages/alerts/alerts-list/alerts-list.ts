@@ -21,6 +21,7 @@ import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
 //import { AlertOptionsPage } from "./alert-options/alert-options";
 import * as _ from "lodash";
+import { Observable } from "rxjs/Observable";
 
 /**
  * Generated class for the AlertsListPage page.
@@ -194,37 +195,44 @@ export class AlertsListPage {
 	doRefresh(refresher?): any {
 		return this.AlertsDataProvider.getLatestCoinsPrice().then(
 			observalbeData => {
-				return new Promise((resolve, reject) => {
-					observalbeData.subscribe(
-						data => {
-							_.forEach(data, (coinPairObj: any) => {
-								let symbol = _.keys(coinPairObj)[0];
-								let alertRec = _.find(this.alertsList, [
-									"symbol",
-									_.toLower(symbol)
-								]);
-								alertRec.currentValue =
-									coinPairObj[symbol][alertRec.unit];
-							});
-							if (refresher) {
-								refresher.complete();
-							}
-							resolve();
-						},
+				// if returned data is observable
+				if (observalbeData instanceof Observable) {
+					return new Promise((resolve, reject) => {
+						observalbeData.subscribe(
+							data => {
+								_.forEach(data, (coinPairObj: any) => {
+									let symbol = _.keys(coinPairObj)[0];
+									let alertRec = _.find(this.alertsList, [
+										"symbol",
+										_.toLower(symbol)
+									]);
+									alertRec.currentValue =
+										coinPairObj[symbol][alertRec.unit];
+								});
+								if (refresher) {
+									refresher.complete();
+								}
+								resolve();
+							},
 
-						error => {
-							// create common util
-							let alert = this.alertCtrl.create({
-								title: "Error",
-								subTitle:
-									"something went wrong. Please check your internet connection",
-								buttons: ["OK"]
-							});
-							alert.present();
-							reject();
-						}
-					);
-				});
+							error => {
+								// create common util
+								let alert = this.alertCtrl.create({
+									title: "Error",
+									subTitle:
+										"something went wrong. Please check your internet connection",
+									buttons: ["OK"]
+								});
+								alert.present();
+								reject();
+							}
+						);
+					});
+				} else {
+					if (refresher) {
+						refresher.complete();
+					}
+				}
 			}
 		);
 	}

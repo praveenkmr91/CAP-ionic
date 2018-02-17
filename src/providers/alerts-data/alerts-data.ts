@@ -23,33 +23,35 @@ export class AlertsDataProvider {
 	}
 
 	getLatestCoinsPrice() {
-		var url = "https://min-api.cryptocompare.com/data/pricemulti";
-		//?fsyms=ETH,DASH&tsyms=BTC,USD
-
 		return this.getAlertsData().then(data => {
-			let myAlerts = [];
-			_.forEach(data, item => {
-				myAlerts.push({
-					fsym: _.toUpper(item.symbol),
-					tsym: _.toUpper(item.unit)
+			if (data && data.length) {
+				var url = "https://min-api.cryptocompare.com/data/pricemulti";
+				//?fsyms=ETH,DASH&tsyms=BTC,USD
+				let myAlerts = [];
+				_.forEach(data, item => {
+					myAlerts.push({
+						fsym: _.toUpper(item.symbol),
+						tsym: _.toUpper(item.unit)
+					});
 				});
-			});
 
-			let observablesArr = [];
+				let observablesArr = [];
+				_.forEach(myAlerts, coinPairObj => {
+					let finalUrl =
+						url +
+						"?fsyms=" +
+						coinPairObj.fsym +
+						"&tsyms=" +
+						coinPairObj.tsym;
+					observablesArr.push(
+						this.http.get(finalUrl).map(res => res.json())
+					);
+				});
 
-			_.forEach(myAlerts, coinPairObj => {
-				let finalUrl =
-					url +
-					"?fsyms=" +
-					coinPairObj.fsym +
-					"&tsyms=" +
-					coinPairObj.tsym;
-				observablesArr.push(
-					this.http.get(finalUrl).map(res => res.json())
-				);
-			});
-
-			return Observable.forkJoin(observablesArr);
+				return Observable.forkJoin(observablesArr);
+			} else {
+				return data;
+			}
 		});
 	}
 

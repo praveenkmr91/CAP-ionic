@@ -30,7 +30,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content padding #content>
-  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!allowReorder">
+  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!allowReorder && alertsList.length">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
@@ -59,7 +59,7 @@
           </ion-note>
         </p>
         <p>
-          <ion-note>CURRENT: {{alert.currentValue | currency}} </ion-note>
+          <ion-note>CURRENT: {{alert.currentValue}} {{alert.unit}} </ion-note>
         </p>
       </div>
     </ion-item>
