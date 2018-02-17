@@ -1,3 +1,13 @@
 page-coins-list {
+	.icon-section {
+		margin-right: 20px;
+		display: inline-block;
+		i.cc {
+			font-size: 3.5rem;
+		}
+	}
 
+	.coin-sortbar {
+		height: 40px;
+	}
 }

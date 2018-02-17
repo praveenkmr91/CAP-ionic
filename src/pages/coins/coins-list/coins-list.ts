@@ -23,15 +23,16 @@ import { CoinsDataProvider } from "../../../providers/coins-data/coins-data";
 	templateUrl: "coins-list.html"
 })
 export class CoinsListPage {
-	coins: any = [];
-	coinsClone: any = [];
-	favCoins: any = [];
+	coinsList: any = [];
+	coinsListClone: any = [];
+	favCoinsList: any = [];
 	filteredCoins: any = [];
 	assetsFolder: string = "assets/fonts/SVG/";
 	searchQuery: string = "";
 	showSearchBar: boolean = false;
 	defaultCoinListView: string = "all";
 	storedFavCoinSymbols: any = [];
+	allowRefresh: boolean = true;
 
 	rankEnabled: boolean = true;
 	rankSortOrder: string = "desc";
@@ -58,7 +59,7 @@ export class CoinsListPage {
 		// present loader
 		loader.present().then(() => {
 			this.doApiCall(() => {
-				this.coinsClone = this.coins;
+				this.coinsListClone = this.coinsList;
 				// dismiss loader
 				loader.dismiss();
 			});
@@ -72,7 +73,7 @@ export class CoinsListPage {
 	doApiCall(successCb?: Function, errorCb?: Function, finalCb?: Function) {
 		this.CoinsDataProvider.getCoins().subscribe(
 			data => {
-				this.coins = data;
+				this.coinsList = data;
 				if (successCb) {
 					successCb();
 				}
@@ -108,7 +109,7 @@ export class CoinsListPage {
 	doFilterCoins(event): void {
 		var input = this.searchQuery.toLowerCase();
 
-		this.coins = _.filter(this.coinsClone, function(coin): boolean {
+		this.coinsList = _.filter(this.coinsListClone, function(coin): boolean {
 			var coinName = coin.long.toLowerCase();
 			var coinSmbol = coin.short.toLowerCase();
 			return (
@@ -119,7 +120,7 @@ export class CoinsListPage {
 
 	// cancel search
 	onSearchCancel(): void {
-		this.coins = this.coinsClone;
+		this.coinsList = this.coinsListClone;
 	}
 
 	// show/hide search bar
@@ -173,7 +174,7 @@ export class CoinsListPage {
 
 	// retrieve symbols
 	getFavCoinSymbolsFromStorage(): any {
-		let favStorage = this.storage.get("favCoins");
+		let favStorage = this.storage.get("favCoinsList");
 		favStorage.then(favCoinsArr => {
 			if (favCoinsArr && favCoinsArr.length) {
 				this.storedFavCoinSymbols = favCoinsArr;
@@ -184,12 +185,12 @@ export class CoinsListPage {
 
 	// store
 	setFavCoinSymbolsToStorage(favCoinsArr: any): any {
-		return this.storage.set("favCoins", favCoinsArr);
+		return this.storage.set("favCoinsList", favCoinsArr);
 	}
 
 	// returns coin object from symbol
 	getFullObjectFromSymbol(symbol: string): void {
-		return _.find(this.coinsClone, ["short", symbol]);
+		return _.find(this.coinsListClone, ["short", symbol]);
 	}
 
 	// returns if coin is in favs
@@ -209,12 +210,12 @@ export class CoinsListPage {
 	// segement switch event
 	coinListViewChanged(val: string): void {
 		if (val === "fav") {
-			this.favCoins = [];
+			this.favCoinsList = [];
 			this.getFavCoinSymbolsFromStorage().then(favCoinsArr => {
 				if (favCoinsArr && favCoinsArr.length) {
 					_.forEach(favCoinsArr, symbol => {
 						let coinObj = this.getFullObjectFromSymbol(symbol);
-						this.favCoins.push(coinObj);
+						this.favCoinsList.push(coinObj);
 						//this.sortBy("rank", this.rankSortOrder, true);
 					});
 				}
@@ -233,9 +234,9 @@ export class CoinsListPage {
 				this.rankEnabled = true;
 				this.rankSortOrder = sortOrder;
 				if (this.defaultCoinListView == "all") {
-					this.coins = this.coins.reverse();
+					this.coinsList = this.coinsList.reverse();
 				} else {
-					this.favCoins = this.favCoins.reverse();
+					this.favCoinsList = this.favCoinsList.reverse();
 				}
 				break;
 			case "changePercent":

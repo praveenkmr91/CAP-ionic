@@ -25,11 +25,11 @@
     </ion-buttons>
   </ion-navbar>
   <ion-toolbar color="primary" *ngIf="showSearchBar">
-    <ion-searchbar [(ngModel)]="searchQuery" (ionCancel)="onSearchCancel($event)" (ionInput)="doFilter($event)">
+    <ion-searchbar [(ngModel)]="searchQuery" (ionCancel)="onSearchCancel($event)" (ionInput)="doFilter($event)" autofocus>
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
-<ion-content padding #content>
+<ion-content no-padding #content>
   <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="!allowReorder && alertsList.length">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
     </ion-refresher-content>
@@ -40,15 +40,10 @@
         <button ion-button float-start item-left icon-only clear color="danger" (tap)="deleteAlert(alert.symbol)" *ngIf="allowReorder">
           <fa-icon name="minus-circle"></fa-icon>
         </button>
-
-        <!-- <span class="sprite sprite-bitcoin small_coin_logo"  *ngIf="!allowReorder"></span> -->
         <i class="cc {{alert.symbol | uppercase}}"></i>
       </div>
       <div class="header-section">
         <h2>{{alert.symbol | uppercase}}</h2>
-        <!-- <button float-end item-right ion-button icon-only clear (tap)="presentActionSheet(alert.symbol)" *ngIf="!allowReorder">
-        <ion-icon name="more"></ion-icon>
-      </button> -->
       </div>
       
       <div class="content-section">

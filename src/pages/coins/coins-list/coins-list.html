@@ -39,16 +39,16 @@
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
-<ion-content padding #content>
-  <ion-refresher (ionRefresh)="doRefresh($event)">
+<ion-content no-padding #content>
+  <ion-refresher (ionRefresh)="doRefresh($event)" *ngIf="allowRefresh && coinsList.length">
     <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
   <div [ngSwitch]="defaultCoinListView">
     <!-- all coins view -->
-    <ion-list>
-      <ion-item-divider color="light">
-        <ion-avatar item-start></ion-avatar>
+    <ion-list no-padding no-margin>
+      <ion-item-divider class="coin-sortbar" color="light" no-margin no-padding>
+        <ion-avatar item-start no-margin no-padding></ion-avatar>
         <button ion-button icon-end color="dark" clear small (click)="sortBy('rank', rankSortOrder)">
           Rank
           <ion-icon *ngIf="rankEnabled" [name]="rankSortOrder === 'asc' ? 'arrow-round-up' : 'arrow-round-down'"></ion-icon>
@@ -61,19 +61,32 @@
     </ion-list>
     <div *ngSwitchCase="'all'">
       <ion-list>
-        <ion-item-sliding #slidingItem *ngFor="let coin of coins" (click)="onCoinListItemTap($event, coin)">
+        <ion-item-sliding #slidingItem *ngFor="let coin of coinsList" (click)="onCoinListItemTap($event, coin)">
           <ion-item>
-            <ion-avatar item-start>
-              <ion-icon class="cc {{coin.short}}"></ion-icon>
-            </ion-avatar>
-            <h2>{{coin.long}} ({{coin.short}})</h2>
-            <span float-start>{{coin.price | currency}}</span>
-            <span float-end>{{coin.perc}} (%24hr)</span>
+            <ion-grid no-padding>
+              <ion-row>
+                <ion-col col-2>
+                  <div class="icon-section" >
+        <i class="cc {{coin.short | uppercase}}"></i>
+      </div>
+                </ion-col>
+                <ion-col col-7>
+                  <h2>{{coin.long}} ({{coin.short}})</h2>
+            {{coin.price | currency}}
+                </ion-col>
+                <ion-col col-3 padding>
+                  {{coin.perc}} (%24hr)
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+    
+    
+            
           </ion-item>
           <ion-item-options side="right" color="secondary">
-            <button ion-button (click)="toggleFavorite(coin)" *ngIf="defaultCoinListView === 'all'" color="light">
-              <ion-icon [name]="isCoinInFavs(coin.short) ? 'heart' : 'heart-outline'" color="danger"></ion-icon>
-              <span>Fav</span>
+            <button ion-button (click)="toggleFavorite(coin)" *ngIf="defaultCoinListView === 'all'" color="danger">
+              <ion-icon color="light" [name]="isCoinInFavs(coin.short) ? 'md-heart' : 'md-heart-outline'" ></ion-icon>
+              <span>Favorites</span>
             </button>
           </ion-item-options>
         </ion-item-sliding>
@@ -82,7 +95,7 @@
     <!-- fav coins view -->
     <div *ngSwitchCase="'fav'">
       <ion-list>
-        <ion-item-sliding #slidingFavItem *ngFor="let coin of favCoins" (click)="onCoinListItemTap($event, coin)">
+        <ion-item-sliding #slidingFavItem *ngFor="let coin of favCoinsList" (click)="onCoinListItemTap($event, coin)">
           <ion-item>
             <ion-avatar item-start>
               <ion-icon class="cc {{coin.short}}"></ion-icon>
@@ -94,7 +107,7 @@
           <ion-item-options side="right">
             <button ion-button (click)="doRemoveFromFavorites(coin)" *ngIf="defaultCoinListView === 'fav'">
               <ion-icon name="heart" color="danger"></ion-icon>
-              <span>Fav</span>
+              <span>Favorites</span>
             </button>
           </ion-item-options>
         </ion-item-sliding>
