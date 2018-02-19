@@ -5,12 +5,7 @@ import {
 	NavController,
 	NavParams,
 	Content,
-	LoadingController,
-	AlertController,
-	PopoverController,
-	ToastController,
 	reorderArray,
-	Platform,
 	ActionSheetController
 } from "ionic-angular";
 import { Storage } from "@ionic/storage";
@@ -19,9 +14,9 @@ import { LocalNotifications } from "@ionic-native/local-notifications";
 import { Vibration } from "@ionic-native/vibration";
 import { AlertsDataProvider } from "../../../providers/alerts-data/alerts-data";
 import { AlertAddPage } from "../alert-add/alert-add";
-//import { AlertOptionsPage } from "./alert-options/alert-options";
 import * as _ from "lodash";
 import { Observable } from "rxjs/Observable";
+import { AppUtility } from "../../../shared/utils/app-utility/app-utility";
 
 /**
  * Generated class for the AlertsListPage page.
@@ -45,30 +40,25 @@ export class AlertsListPage {
 	selectedAlertOption: string = "";
 
 	@ViewChild("content") content: Content;
-	//@ViewChild("triggerCond") content: Content;
 
 	constructor(
 		public navCtrl: NavController,
 		public navParams: NavParams,
-		public loading: LoadingController,
 		public AlertsDataProvider: AlertsDataProvider,
 		public storage: Storage,
-		public alertCtrl: AlertController,
-		public popoverCtrl: PopoverController,
-		public toastCtrl: ToastController,
 		public localNotifications: LocalNotifications,
-		public platform: Platform,
 		public vibration: Vibration,
 		public backgroundMode: BackgroundMode,
-		public actionSheetCtrl: ActionSheetController
+		public actionSheetCtrl: ActionSheetController,
+		public AppUtility: AppUtility
 	) {
-		/*if (this.platform.is("cordova")) {
+		/*if (this.AppUtility.isCordova()) {
 			this.backgroundMode.enable();
 			this.backgroundMode.overrideBackButton();
 			this.backgroundMode.setDefaults({ silent: false });
 
 			let isactive = this.backgroundMode.isActive();
-			this.showToast(isactive ? "yay" : "nah");
+			this.AppUtility.showToast(isactive ? "yay" : "nah");
 
 			this.localNotifications.hasPermission().then(function(granted) {
 				if (!granted) {
@@ -79,25 +69,25 @@ export class AlertsListPage {
 	}
 
 	ionViewDidLoad() {
-		console.log("ionViewDidLoad AlertsListPage");
+		this.AppUtility.log("ionViewDidLoad AlertsListPage");
 
-		/*if (this.platform.is("cordova")) {
+		/*if (this.AppUtility.isCordova()) {
 			this.backgroundMode.on("activate").subscribe(
 				data => {
-					this.showToast("success activate");
+					this.AppUtility.showToast("success activate");
 				},
 				error => {
-					this.showToast("failure activate");
+					this.AppUtility.showToast("failure activate");
 				},
 				() => {
-					this.showToast("fainal");
+					this.AppUtility.showToast("fainal");
 				}
 			);
 
 			this.backgroundMode.on("activate", function() {
-				this.showToast("acive");
+				this.AppUtility.showToast("acive");
 				setInterval(function() {
-					this.showToast("notif trigger");
+					this.AppUtility.showToast("notif trigger");
 					this.triggerNotification({
 						text: " < 0.00078 \n Current: 0.000056"
 					});
@@ -106,24 +96,16 @@ export class AlertsListPage {
 
 			this.localNotifications.on("trigger", (notification, state) => {
 				let notificationData = JSON.parse(notification.data);
-				this.showToast("triggered: " + notificationData.key);
+				this.AppUtility.showToast("triggered: " + notificationData.key);
 			});
 		}*/
 	}
 
 	ionViewDidEnter() {
-		// define loader configs
-		let loader = this.loading.create({
-			content: "Please wait..."
-		});
-
-		// present loader
-		loader.present().then(() => {
+		this.AppUtility.showLoadingMask(() => {
 			// get alerts list
 			this.doProviderCall(() => {
 				this.alertsListClone = this.alertsList;
-				// dismiss loader
-				loader.dismiss();
 			});
 		});
 	}
@@ -149,7 +131,7 @@ export class AlertsListPage {
 				}
 			})
 			.catch(exception => {
-				this.showToast("unable to fetch alerts data");
+				this.AppUtility.showToast("unable to fetch alerts data");
 				if (errorCb) {
 					errorCb();
 				}
@@ -158,7 +140,7 @@ export class AlertsListPage {
 
 	// open page settings
 	doOpensettings() {
-		console.log("settings");
+		this.AppUtility.log("settings");
 	}
 
 	// show/hide search bar
@@ -188,7 +170,7 @@ export class AlertsListPage {
 	}
 
 	triggerCondChanged() {
-		console.log(this);
+		this.AppUtility.log(this);
 	}
 
 	// page pull down refresh - update current price
@@ -225,14 +207,8 @@ export class AlertsListPage {
 
 							error => {
 								// create common util
-								let alert = this.alertCtrl.create({
-									title: "Error",
-									subTitle:
-										"something went wrong. Please check your internet connection",
-									buttons: ["OK"]
-								});
-								alert.present();
-								reject();
+								this.AppUtility.showErrorAlert();
+								//reject();
 							}
 						);
 					});
@@ -262,12 +238,14 @@ export class AlertsListPage {
 		this.AlertsDataProvider.deleteAlert(symbol).then(smbl => {
 			// refresh list
 			this.ionViewDidEnter();
-			this.showToast(smbl.toUpperCase() + " is deleted successfully");
+			this.AppUtility.showToast(
+				smbl.toUpperCase() + " is deleted from your Alerts"
+			);
 		});
 	}
 
 	editAlert(symbol): void {
-		console.log(symbol);
+		this.AppUtility.log(symbol);
 	}
 
 	toggleAlert(symbol): void {
@@ -292,15 +270,6 @@ export class AlertsListPage {
 		this.alertsList = reorderArray(this.alertsList, indexes);
 	}
 
-	showToast(msg: string, duration?: number) {
-		duration = duration || 3000;
-		let toast = this.toastCtrl.create({
-			message: msg,
-			duration: duration
-		});
-		toast.present();
-	}
-
 	presentActionSheet(symbol?: string) {
 		if (!this.allowReorder) {
 			let actionSheet = this.actionSheetCtrl.create({
@@ -311,7 +280,7 @@ export class AlertsListPage {
 						icon: "color-wand",
 						cssClass: "color-wand",
 						handler: () => {
-							console.log("Edit");
+							this.AppUtility.log("Edit");
 							// navigate to edit page
 						}
 					},
@@ -319,14 +288,14 @@ export class AlertsListPage {
 						text: "Toggle Alert",
 						icon: "alarm",
 						handler: () => {
-							console.log("Toggle clicked");
+							this.AppUtility.log("Toggle clicked");
 						}
 					},
 					{
 						text: "Delete",
 						icon: "trash",
 						handler: () => {
-							console.log(symbol);
+							this.AppUtility.log(symbol);
 							this.deleteAlert(symbol);
 						}
 					}

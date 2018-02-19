@@ -5,14 +5,13 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-navbar no-border-bottom no-padding color="primary" >
+  <ion-navbar no-border-bottom no-padding color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <!-- <ion-title>COINS</ion-title> -->
     <ion-grid no-padding>
       <ion-row>
-        
         <ion-col col-8 offset-2>
           <ion-segment [(ngModel)]="defaultCoinListView" (ionChange)="coinListViewChanged($event.value)" color="light" mode="ios">
             <ion-segment-button value="all">
@@ -62,30 +61,27 @@
     <div *ngSwitchCase="'all'">
       <ion-list>
         <ion-item-sliding #slidingItem *ngFor="let coin of coinsList" (click)="onCoinListItemTap($event, coin)">
-          <ion-item>
+          <ion-item (click)="onCoinTap(coin.short)">
             <ion-grid no-padding>
               <ion-row>
                 <ion-col col-2>
-                  <div class="icon-section" >
-        <i class="cc {{coin.short | uppercase}}"></i>
-      </div>
+                  <div class="icon-section">
+                    <i class="cc {{coin.short | uppercase}}"></i>
+                  </div>
                 </ion-col>
-                <ion-col col-7>
-                  <h2>{{coin.long}} ({{coin.short}})</h2>
-            {{coin.price | currency}}
+                <ion-col col-8>
+                  <h2>{{coin.long}} ({{coin.short}})</h2> 
+                  {{coin.price | currency}}
                 </ion-col>
-                <ion-col col-3 padding>
-                  {{coin.perc}} (%24hr)
+                <ion-col col-2 padding-vertical>
+                  {{coin.perc}}%
                 </ion-col>
               </ion-row>
             </ion-grid>
-    
-    
-            
           </ion-item>
           <ion-item-options side="right" color="secondary">
             <button ion-button (click)="toggleFavorite(coin)" *ngIf="defaultCoinListView === 'all'" color="danger">
-              <ion-icon color="light" [name]="isCoinInFavs(coin.short) ? 'md-heart' : 'md-heart-outline'" ></ion-icon>
+              <ion-icon color="light" [name]="isCoinInFavs(coin.short) ? 'md-heart' : 'md-heart-outline'"></ion-icon>
               <span>Favorites</span>
             </button>
           </ion-item-options>

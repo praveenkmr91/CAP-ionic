@@ -6,6 +6,9 @@ import { Observable } from "rxjs/Observable";
 import { Storage } from "@ionic/storage";
 import * as _ from "lodash";
 
+import { AppUtility } from "../../shared/utils/app-utility/app-utility";
+import { AppConfigs } from "../../shared/configs/app-configs/app-configs";
+
 /*
   Generated class for the AlertsDataProvider provider.
 
@@ -14,8 +17,13 @@ import * as _ from "lodash";
 */
 @Injectable()
 export class AlertsDataProvider {
-	constructor(public http: Http, public storage: Storage) {
-		console.log("AlertsDataProvider Provider");
+	constructor(
+		public http: Http,
+		public storage: Storage,
+		public AppConfigs: AppConfigs,
+		public AppUtility: AppUtility
+	) {
+		this.AppUtility.log("AlertsDataProvider Provider");
 	}
 
 	getAlertsData() {
@@ -25,7 +33,7 @@ export class AlertsDataProvider {
 	getLatestCoinsPrice() {
 		return this.getAlertsData().then(data => {
 			if (data && data.length) {
-				var url = "https://min-api.cryptocompare.com/data/pricemulti";
+				var url = this.AppConfigs.getPriceTickerBaseUrl();
 				//?fsyms=ETH,DASH&tsyms=BTC,USD
 				let myAlerts = [];
 				_.forEach(data, item => {
@@ -99,24 +107,29 @@ export class AlertsDataProvider {
 	}
 
 	fetchAlertDateFromStorage(): any {
-		return this.storage.get("alertsList").then(alertsList => {
-			if (!alertsList) {
-				return this.storage.set("alertsList", []);
-			} else {
-				return new Promise((resolve, reject) => {
-					resolve(alertsList);
-				});
-			}
-		});
+		return this.storage
+			.get(this.AppConfigs.storageDB.alertsList)
+			.then(alertsList => {
+				if (!alertsList) {
+					return this.storage.set(
+						this.AppConfigs.storageDB.alertsList,
+						[]
+					);
+				} else {
+					return new Promise((resolve, reject) => {
+						resolve(alertsList);
+					});
+				}
+			});
 	}
 
 	saveAlertDateToStorage(data) {
 		return this.clearAlertsData().then(() => {
-			return this.storage.set("alertsList", data);
+			return this.storage.set(this.AppConfigs.storageDB.alertsList, data);
 		});
 	}
 
 	clearAlertsData() {
-		return this.storage.remove("alertsList");
+		return this.storage.remove(this.AppConfigs.storageDB.alertsList);
 	}
 }

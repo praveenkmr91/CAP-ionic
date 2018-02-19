@@ -1,14 +1,11 @@
 import { Component, ViewChild } from "@angular/core";
-import {
-	IonicPage,
-	NavController,
-	NavParams,
-	LoadingController,
-	Content
-} from "ionic-angular";
+import { IonicPage, NavController, NavParams, Content } from "ionic-angular";
 import * as _ from "lodash";
 import { Storage } from "@ionic/storage";
 import { CoinsDataProvider } from "../../../providers/coins-data/coins-data";
+import { CoinDetailPage } from "../../../pages/coins/coin-detail/coin-detail";
+
+import { AppUtility } from "../../../shared/utils/app-utility/app-utility";
 
 /**
  * Generated class for the CoinsListPage page.
@@ -44,24 +41,16 @@ export class CoinsListPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public CoinsDataProvider: CoinsDataProvider,
-		public loading: LoadingController,
-		public storage: Storage
+		public storage: Storage,
+		public AppUtility: AppUtility
 	) {}
 
 	ionViewDidLoad() {
-		//console.log('ionViewDidLoad CoinsListPage');
+		//this.AppUtility.log('ionViewDidLoad CoinsListPage');
 
-		// define loader configs
-		let loader = this.loading.create({
-			content: "Please wait..."
-		});
-
-		// present loader
-		loader.present().then(() => {
+		this.AppUtility.showLoadingMask(() => {
 			this.doApiCall(() => {
 				this.coinsListClone = this.coinsList;
-				// dismiss loader
-				loader.dismiss();
 			});
 		});
 
@@ -79,7 +68,7 @@ export class CoinsListPage {
 				}
 			},
 			error => {
-				console.log("something went wrong");
+				this.AppUtility.log("something went wrong");
 				if (errorCb) {
 					errorCb();
 				}
@@ -94,7 +83,7 @@ export class CoinsListPage {
 
 	// go to details page
 	onCoinListItemTap(event, coin): void {
-		//console.log(coin);
+		//this.AppUtility.log(coin);
 	}
 
 	// page pull down refresh
@@ -131,7 +120,7 @@ export class CoinsListPage {
 
 	// open settings menu
 	doOpenSettings(): void {
-		console.log("settings");
+		this.AppUtility.log("settings");
 	}
 
 	// add/remove to/from fav
@@ -198,7 +187,7 @@ export class CoinsListPage {
 		if (checkFromStorage) {
 			this.getFavCoinSymbolsFromStorage().then(favCoinsArr => {
 				if (favCoinsArr && favCoinsArr.length) {
-					console.log(favCoinsArr);
+					this.AppUtility.log(favCoinsArr);
 					return _.includes(favCoinsArr, symbol);
 				}
 			});
@@ -244,5 +233,11 @@ export class CoinsListPage {
 				this.percentSortOrder = sortOrder;
 				break;
 		}
+	}
+
+	onCoinTap(symbol) {
+		this.navCtrl.push(CoinDetailPage, {
+			symbol: symbol
+		});
 	}
 }

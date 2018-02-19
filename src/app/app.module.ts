@@ -17,8 +17,8 @@ import { FingerprintAIO } from "@ionic-native/fingerprint-aio";
 // pages
 import { MyApp } from "./app.component";
 import { CoinsListPage } from "../pages/coins/coins-list/coins-list";
+import { CoinDetailPage } from "../pages/coins/coin-detail/coin-detail";
 import { AlertsListPage } from "../pages/alerts/alerts-list/alerts-list";
-import { AlertOptionsPage } from "../pages/alerts/alerts-list/alert-options/alert-options";
 import { AlertAddPage } from "../pages/alerts/alert-add/alert-add";
 import { PortfolioListPage } from "../pages/portfolio/portfolio-list/portfolio-list";
 import { SettingsPage } from "../pages/settings/settings";
@@ -27,14 +27,17 @@ import { SettingsPage } from "../pages/settings/settings";
 import { CoinsDataProvider } from "../providers/coins-data/coins-data";
 import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
 
+import { AppUtility } from "../shared/utils/app-utility/app-utility";
+import { AppConfigs } from "../shared/configs/app-configs/app-configs";
+
 @NgModule({
   declarations: [
     MyApp,
     FaIconComponent,
     PortfolioListPage,
     CoinsListPage,
+    CoinDetailPage,
     AlertsListPage,
-    AlertOptionsPage,
     AlertAddPage,
     SettingsPage
   ],
@@ -50,8 +53,8 @@ import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
     MyApp,
     PortfolioListPage,
     CoinsListPage,
+    CoinDetailPage,
     AlertsListPage,
-    AlertOptionsPage,
     AlertAddPage,
     SettingsPage
   ],
@@ -64,7 +67,9 @@ import { AlertsDataProvider } from "../providers/alerts-data/alerts-data";
     BackgroundMode,
     FingerprintAIO,
     CoinsDataProvider,
-    AlertsDataProvider
+    AlertsDataProvider,
+    AppUtility,
+    AppConfigs
   ]
 })
 export class AppModule {}

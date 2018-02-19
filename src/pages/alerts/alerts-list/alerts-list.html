@@ -50,7 +50,7 @@
         <p>
           <ion-note>TARGET:
             <ng-template #less> &lt; </ng-template>
-            <span *ngIf="alert.triggerCondition == 'less';else less;"> &gt;</span> {{alert.targetVal}} {{alert.unit}}
+            <span *ngIf="alert.triggerCondition == 'more';else less;"> &gt;</span> {{alert.targetVal}} {{alert.unit}}
           </ion-note>
         </p>
         <p>
