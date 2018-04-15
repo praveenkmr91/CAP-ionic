@@ -60,7 +60,7 @@
     </ion-list>
     <div *ngSwitchCase="'all'">
       <ion-list>
-        <ion-item-sliding #slidingItem *ngFor="let coin of coinsList" (click)="onCoinListItemTap($event, coin)">
+        <ion-item-sliding *ngFor="let coin of coinsList" (click)="onCoinListItemTap($event, coin)">
           <ion-item (click)="onCoinTap(coin.short)">
             <ion-grid no-padding>
               <ion-row>
@@ -91,7 +91,7 @@
     <!-- fav coins view -->
     <div *ngSwitchCase="'fav'">
       <ion-list>
-        <ion-item-sliding #slidingFavItem *ngFor="let coin of favCoinsList" (click)="onCoinListItemTap($event, coin)">
+        <ion-item-sliding *ngFor="let coin of favCoinsList" (click)="onCoinListItemTap($event, coin)">
           <ion-item>
             <ion-avatar item-start>
               <ion-icon class="cc {{coin.short}}"></ion-icon>

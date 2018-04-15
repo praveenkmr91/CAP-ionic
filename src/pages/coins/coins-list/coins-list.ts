@@ -23,8 +23,6 @@ export class CoinsListPage {
 	coinsList: any = [];
 	coinsListClone: any = [];
 	favCoinsList: any = [];
-	filteredCoins: any = [];
-	assetsFolder: string = "assets/fonts/SVG/";
 	searchQuery: string = "";
 	showSearchBar: boolean = false;
 	defaultCoinListView: string = "all";
@@ -178,7 +176,7 @@ export class CoinsListPage {
 	}
 
 	// returns coin object from symbol
-	getFullObjectFromSymbol(symbol: string): void {
+	getFullObjectFromSymbol(symbol: string): any {
 		return _.find(this.coinsListClone, ["short", symbol]);
 	}
 
